@@ -28,7 +28,7 @@ class Contact {
 }
 
 class ContactBook extends ValueNotifier<List<Contact>> {
-  ContactBook._sharedInstance() : super([]);
+  ContactBook._sharedInstance() : super([Contact(name: 'Hello')]);
   static final ContactBook _shared = ContactBook._sharedInstance();
   factory ContactBook() => _shared;
 
@@ -52,17 +52,31 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final contactBook = ContactBook();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Contacts'),
       ),
-      body: ListView.builder(
-        itemCount: contactBook.length,
-        itemBuilder: (context, index) {
-          final contact = contactBook.contact(atIndex: index)!;
-          return ListTile(
-            title: Text(contact.name),
+      body: ValueListenableBuilder(
+        valueListenable: ContactBook(),
+        builder: (contact, values, child) {
+          return ListView.builder(
+            itemCount: values.length,
+            itemBuilder: (context, index) {
+              final contact = values[index];
+              return Dismissible(
+                onDismissed: (direction) {
+                  values.remove(contact);
+                },
+                key: ValueKey(contact.id),
+                child: Material(
+                  color: Colors.white,
+                  elevation: 6,
+                  child: ListTile(
+                    title: Text(contact.name),
+                  ),
+                ),
+              );
+            },
           );
         },
       ),
