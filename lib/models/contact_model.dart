@@ -1,5 +1,3 @@
-import 'package:uuid/uuid.dart';
-
 class Contact {
   final String id;
   final String name;
@@ -7,5 +5,6 @@ class Contact {
   Contact({
     required this.name,
     required this.email,
-  }) : id = const Uuid().v4();
+    required this.id,
+  });
 }

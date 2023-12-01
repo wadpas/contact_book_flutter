@@ -1,3 +1,4 @@
+import 'package:contact_book_flutter/sevices/auth_service.dart';
 import 'package:flutter/material.dart';
 
 import '../sevices/contacts_service.dart';
@@ -14,6 +15,7 @@ class _NewContactViewState extends State<NewContactView> {
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
   final _formKey = GlobalKey<FormState>();
+  final contactsService = ContactsService();
 
   @override
   void initState() {
@@ -37,6 +39,7 @@ class _NewContactViewState extends State<NewContactView> {
       ),
       body: Center(
         child: Card(
+          color: Colors.white,
           margin: const EdgeInsets.all(15),
           child: Padding(
             padding: const EdgeInsets.all(15),
@@ -47,8 +50,9 @@ class _NewContactViewState extends State<NewContactView> {
                 children: [
                   TextFormField(
                     controller: _nameController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Name',
+                      labelStyle: Theme.of(context).textTheme.bodyMedium,
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
@@ -61,8 +65,9 @@ class _NewContactViewState extends State<NewContactView> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     textCapitalization: TextCapitalization.none,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Email',
+                      labelStyle: Theme.of(context).textTheme.bodyMedium,
                     ),
                     validator: (value) {
                       if (value == null ||
@@ -74,22 +79,28 @@ class _NewContactViewState extends State<NewContactView> {
                     },
                   ),
                   const SizedBox(height: 15),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        final contact = Contact(
-                          name: _nameController.text,
-                          email: _emailController.text,
-                        );
-                        ContactsService().add(contact: contact);
-                        Navigator.of(context).pop();
-                      }
+                  ValueListenableBuilder(
+                    valueListenable: contactsService,
+                    builder: (context, value, child) {
+                      return value['isLoading']
+                          ? const CircularProgressIndicator()
+                          : ElevatedButton(
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  contactsService
+                                      .addContact(
+                                        _nameController.text,
+                                        _emailController.text,
+                                      )
+                                      .then(
+                                        (_) => Navigator.of(context).pop(),
+                                      );
+                                }
+                              },
+                              child: const Text('Add contact'),
+                            );
                     },
-                    child: Text(
-                      'Add contact',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                  )
+                  ),
                 ],
               ),
             ),

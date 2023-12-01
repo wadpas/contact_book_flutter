@@ -14,35 +14,51 @@ class AuthView extends StatelessWidget {
       ),
       body: Center(
         child: ValueListenableBuilder(
-            valueListenable: authService,
-            builder: (context, value, child) {
-              return value
-                  ? const CircularProgressIndicator()
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Authentication',
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            authService.signInWithGoogle().catchError((e) {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    content: Text(e.message.toString()),
-                                  );
-                                },
-                              );
-                            });
-                          },
-                          child: const Text('Google'),
-                        )
-                      ],
-                    );
-            }),
+          valueListenable: authService,
+          builder: (context, value, child) {
+            return value
+                ? const CircularProgressIndicator()
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Authentication',
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          authService.signInWithGoogle().catchError((e) {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  content: Text(e.message.toString()),
+                                );
+                              },
+                            );
+                          });
+                        },
+                        child: const Text('Google'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          authService.signInAnonymous().catchError((e) {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  content: Text(e.message.toString()),
+                                );
+                              },
+                            );
+                          });
+                        },
+                        child: const Text('Anonymous'),
+                      )
+                    ],
+                  );
+          },
+        ),
       ),
     );
   }

@@ -3,13 +3,25 @@ import 'package:flutter/material.dart';
 
 import '../sevices/contacts_service.dart';
 
-class ContactsView extends StatelessWidget {
+class ContactsView extends StatefulWidget {
   const ContactsView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final authService = AuthService();
+  State<ContactsView> createState() => _ContactsViewState();
+}
 
+class _ContactsViewState extends State<ContactsView> {
+  final contactsService = ContactsService();
+  final authService = AuthService();
+
+  @override
+  void initState() {
+    contactsService.getContacts();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Contacts'),
@@ -23,37 +35,40 @@ class ContactsView extends StatelessWidget {
         ],
       ),
       body: ValueListenableBuilder(
-        valueListenable: ContactsService(),
+        valueListenable: contactsService,
         builder: (context, values, child) {
-          return ListView.builder(
-            padding: const EdgeInsets.all(10),
-            itemCount: values.length,
-            itemBuilder: (context, index) {
-              final contact = values[index];
-              return Dismissible(
-                onDismissed: (direction) =>
-                    ContactsService().remove(contact: contact),
-                key: ValueKey(contact.id),
-                child: Material(
-                  color: Colors.white,
-                  elevation: 1,
-                  child: ListTile(
-                    leading: Text((index + 1).toString()),
-                    leadingAndTrailingTextStyle:
-                        Theme.of(context).textTheme.bodyLarge,
-                    title: Text(contact.name),
-                    subtitle: Text(contact.email),
-                    trailing: IconButton(
-                      onPressed: () =>
-                          ContactsService().remove(contact: contact),
-                      icon: const Icon(Icons.delete),
-                    ),
-                    iconColor: Colors.redAccent,
-                  ),
-                ),
-              );
-            },
-          );
+          return values['isLoading']
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.all(10),
+                  itemCount: values['contacts'].length,
+                  itemBuilder: (context, index) {
+                    final contact = values['contacts'][index];
+                    return Dismissible(
+                      onDismissed: (direction) =>
+                          contactsService.remove(contact),
+                      key: ValueKey(contact.id),
+                      child: Material(
+                        color: Colors.white,
+                        elevation: 1,
+                        child: ListTile(
+                          leading: Text((index + 1).toString()),
+                          leadingAndTrailingTextStyle:
+                              Theme.of(context).textTheme.bodyLarge,
+                          title: Text(contact.name),
+                          subtitle: Text(contact.email),
+                          trailing: IconButton(
+                            onPressed: () => contactsService.remove(contact),
+                            icon: const Icon(Icons.delete),
+                          ),
+                          iconColor: Colors.redAccent,
+                        ),
+                      ),
+                    );
+                  },
+                );
         },
       ),
       floatingActionButton: FloatingActionButton(
