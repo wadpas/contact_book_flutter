@@ -1,4 +1,4 @@
-package com.example.contacts_vanilla_state_flutter
+package com.example.contact_book_flutter
 
 import io.flutter.embedding.android.FlutterActivity
 

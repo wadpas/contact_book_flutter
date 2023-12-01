@@ -1,18 +1,29 @@
+import 'package:contact_book_flutter/sevices/auth_service.dart';
 import 'package:flutter/material.dart';
 
-import '../state/contact_book.dart';
+import '../sevices/contacts_service.dart';
 
-class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+class ContactsView extends StatelessWidget {
+  const ContactsView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authService = AuthService();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Contacts'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              authService.signOut();
+            },
+            icon: const Icon(Icons.logout_outlined),
+          )
+        ],
       ),
       body: ValueListenableBuilder(
-        valueListenable: ContactBook(),
+        valueListenable: ContactsService(),
         builder: (context, values, child) {
           return ListView.builder(
             padding: const EdgeInsets.all(10),
@@ -21,7 +32,7 @@ class HomeView extends StatelessWidget {
               final contact = values[index];
               return Dismissible(
                 onDismissed: (direction) =>
-                    ContactBook().remove(contact: contact),
+                    ContactsService().remove(contact: contact),
                 key: ValueKey(contact.id),
                 child: Material(
                   color: Colors.white,
@@ -33,7 +44,8 @@ class HomeView extends StatelessWidget {
                     title: Text(contact.name),
                     subtitle: Text(contact.email),
                     trailing: IconButton(
-                      onPressed: () => ContactBook().remove(contact: contact),
+                      onPressed: () =>
+                          ContactsService().remove(contact: contact),
                       icon: const Icon(Icons.delete),
                     ),
                     iconColor: Colors.redAccent,

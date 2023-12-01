@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../state/contact_book.dart';
+import '../sevices/contacts_service.dart';
 import '../models/contact_model.dart';
 
 class NewContactView extends StatefulWidget {
@@ -81,7 +81,7 @@ class _NewContactViewState extends State<NewContactView> {
                           name: _nameController.text,
                           email: _emailController.text,
                         );
-                        ContactBook().add(contact: contact);
+                        ContactsService().add(contact: contact);
                         Navigator.of(context).pop();
                       }
                     },

@@ -1,4 +1,4 @@
-# contacts_vanilla_state_flutter
+# contact_book_flutter
 
 A new Flutter project.
 

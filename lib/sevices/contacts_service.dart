@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 import '../models/contact_model.dart';
 
-class ContactBook extends ValueNotifier<List<Contact>> {
-  ContactBook._sharedInstance()
+class ContactsService extends ValueNotifier<List<Contact>> {
+  ContactsService._sharedInstance()
       : super([
           Contact(name: 'Tod', email: 'tod@gmail.com'),
           Contact(name: 'Mark', email: 'mark@gmail.com'),
         ]);
-  static final ContactBook _shared = ContactBook._sharedInstance();
-  factory ContactBook() => _shared;
+  static final ContactsService _shared = ContactsService._sharedInstance();
+  factory ContactsService() => _shared;
 
   void add({required Contact contact}) {
     value.add(contact);
