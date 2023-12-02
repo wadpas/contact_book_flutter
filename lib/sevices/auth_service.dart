@@ -1,11 +1,9 @@
-import 'package:contact_book_flutter/sevices/contacts_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService extends ValueNotifier<bool> {
   AuthService() : super(false);
-  final contactsService = ContactsService();
 
   Future signInWithGoogle() async {
     try {

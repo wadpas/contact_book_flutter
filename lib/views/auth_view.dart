@@ -1,13 +1,14 @@
-import 'package:contact_book_flutter/sevices/auth_service.dart';
 import 'package:flutter/material.dart';
 
+import 'package:contact_book_flutter/sevices/auth_service.dart';
+
 class AuthView extends StatelessWidget {
-  const AuthView({super.key});
+  const AuthView({required this.authService, super.key});
+
+  final AuthService authService;
 
   @override
   Widget build(BuildContext context) {
-    final authService = AuthService();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Contact Book'),

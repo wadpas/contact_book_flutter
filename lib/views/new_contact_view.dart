@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../sevices/contacts_service.dart';
+import 'package:contact_book_flutter/sevices/contacts_service.dart';
 
 class NewContactView extends StatefulWidget {
   const NewContactView({super.key});
@@ -13,7 +13,6 @@ class _NewContactViewState extends State<NewContactView> {
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
   final _formKey = GlobalKey<FormState>();
-  final contactsService = ContactsService();
 
   @override
   void initState() {
@@ -31,6 +30,9 @@ class _NewContactViewState extends State<NewContactView> {
 
   @override
   Widget build(BuildContext context) {
+    final arguments = ModalRoute.of(context)!.settings.arguments as Map;
+    final ContactsService contactsService = arguments['contactsService'];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('New Contact'),

@@ -15,20 +15,18 @@ class ContactsService extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    if (_contacts.isEmpty) {
-      await db.collection("contacts").get().then(
-        (snapshot) {
-          for (var contact in snapshot.docs) {
-            Contact newContact = Contact(
-              name: contact['name'],
-              email: contact['email'],
-              id: contact.id,
-            );
-            _contacts.add(newContact);
-          }
-        },
-      );
-    }
+    await db.collection("contacts").get().then(
+      (snapshot) {
+        for (var contact in snapshot.docs) {
+          Contact newContact = Contact(
+            name: contact['name'],
+            email: contact['email'],
+            id: contact.id,
+          );
+          _contacts.add(newContact);
+        }
+      },
+    );
     _isLoading = false;
     notifyListeners();
   }
@@ -56,8 +54,18 @@ class ContactsService extends ChangeNotifier {
     notifyListeners();
   }
 
-  void remove(Contact contact) async {
-    _contacts.remove(contact);
+  Future removeContact(Contact contact) async {
+    _isLoading = true;
     notifyListeners();
+
+    await db.collection('contacts').doc(contact.id).delete();
+
+    _contacts.remove(contact);
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  void clearContacts() {
+    _contacts.clear();
   }
 }

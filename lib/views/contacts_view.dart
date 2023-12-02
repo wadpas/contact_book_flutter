@@ -1,23 +1,33 @@
-import 'package:contact_book_flutter/sevices/auth_service.dart';
 import 'package:flutter/material.dart';
 
-import '../sevices/contacts_service.dart';
+import 'package:contact_book_flutter/sevices/auth_service.dart';
+import 'package:contact_book_flutter/sevices/contacts_service.dart';
 
 class ContactsView extends StatefulWidget {
-  const ContactsView({super.key});
+  const ContactsView({
+    super.key,
+    required this.authService,
+    required this.contactsService,
+  });
+
+  final AuthService authService;
+  final ContactsService contactsService;
 
   @override
   State<ContactsView> createState() => _ContactsViewState();
 }
 
 class _ContactsViewState extends State<ContactsView> {
-  final contactsService = ContactsService();
-  final authService = AuthService();
-
   @override
   void initState() {
-    contactsService.getContacts();
+    widget.contactsService.getContacts();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget.contactsService.clearContacts();
+    super.dispose();
   }
 
   @override
@@ -28,27 +38,27 @@ class _ContactsViewState extends State<ContactsView> {
         actions: [
           IconButton(
             onPressed: () {
-              authService.signOut();
+              widget.authService.signOut();
             },
             icon: const Icon(Icons.logout_outlined),
           )
         ],
       ),
       body: ListenableBuilder(
-        listenable: contactsService,
+        listenable: widget.contactsService,
         builder: (BuildContext context, Widget? child) {
-          return contactsService.isLoading
+          return widget.contactsService.isLoading
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
               : ListView.builder(
                   padding: const EdgeInsets.all(10),
-                  itemCount: contactsService.contacts.length,
+                  itemCount: widget.contactsService.contacts.length,
                   itemBuilder: (context, index) {
-                    final contact = contactsService.contacts[index];
+                    final contact = widget.contactsService.contacts[index];
                     return Dismissible(
                       onDismissed: (direction) =>
-                          contactsService.remove(contact),
+                          widget.contactsService.removeContact(contact),
                       key: ValueKey(contact.id),
                       child: Material(
                         color: Colors.white,
@@ -60,7 +70,8 @@ class _ContactsViewState extends State<ContactsView> {
                           title: Text(contact.name),
                           subtitle: Text(contact.email),
                           trailing: IconButton(
-                            onPressed: () => contactsService.remove(contact),
+                            onPressed: () =>
+                                widget.contactsService.removeContact(contact),
                             icon: const Icon(Icons.delete),
                           ),
                           iconColor: Colors.redAccent,
@@ -74,7 +85,9 @@ class _ContactsViewState extends State<ContactsView> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () async {
-          await Navigator.of(context).pushNamed('/new-contact');
+          await Navigator.of(context).pushNamed('/new-contact', arguments: {
+            'contactsService': widget.contactsService,
+          });
         },
       ),
     );

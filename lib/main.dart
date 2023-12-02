@@ -1,3 +1,5 @@
+import 'package:contact_book_flutter/sevices/auth_service.dart';
+import 'package:contact_book_flutter/sevices/contacts_service.dart';
 import 'package:contact_book_flutter/views/auth_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +25,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AuthService authService = AuthService();
+    final contactsService = ContactsService();
+
     return MaterialApp(
       title: 'Contacts',
       theme: ThemeData(
@@ -36,9 +41,12 @@ class MyApp extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            return const ContactsView();
+            return ContactsView(
+              authService: authService,
+              contactsService: contactsService,
+            );
           }
-          return const AuthView();
+          return AuthView(authService: authService);
         },
       ),
       routes: {

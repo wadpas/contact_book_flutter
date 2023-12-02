@@ -1,6 +1,11 @@
 # contact_book_flutter
 
-ValueNotifier
+Features:
+
+- ChangeNotifier
+- ValueNotifier
+- ListenableBuilder
+- ValueListenableBuilder
 
 ## Getting Started
 
