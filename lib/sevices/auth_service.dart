@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService extends ValueNotifier<bool> {
   AuthService() : super(false);
+  final contactsService = ContactsService();
 
   Future signInWithGoogle() async {
     try {
@@ -50,6 +51,5 @@ class AuthService extends ValueNotifier<bool> {
   Future signOut() async {
     await FirebaseAuth.instance.signOut();
     await GoogleSignIn().signOut();
-    ContactsService().value['contacts'] = [];
   }
 }

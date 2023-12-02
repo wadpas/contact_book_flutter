@@ -1,8 +1,6 @@
-import 'package:contact_book_flutter/sevices/auth_service.dart';
 import 'package:flutter/material.dart';
 
 import '../sevices/contacts_service.dart';
-import '../models/contact_model.dart';
 
 class NewContactView extends StatefulWidget {
   const NewContactView({super.key});
@@ -79,10 +77,10 @@ class _NewContactViewState extends State<NewContactView> {
                     },
                   ),
                   const SizedBox(height: 15),
-                  ValueListenableBuilder(
-                    valueListenable: contactsService,
-                    builder: (context, value, child) {
-                      return value['isLoading']
+                  ListenableBuilder(
+                    listenable: contactsService,
+                    builder: (BuildContext context, Widget? child) {
+                      return contactsService.isLoading
                           ? const CircularProgressIndicator()
                           : ElevatedButton(
                               onPressed: () {

@@ -34,18 +34,18 @@ class _ContactsViewState extends State<ContactsView> {
           )
         ],
       ),
-      body: ValueListenableBuilder(
-        valueListenable: contactsService,
-        builder: (context, values, child) {
-          return values['isLoading']
+      body: ListenableBuilder(
+        listenable: contactsService,
+        builder: (BuildContext context, Widget? child) {
+          return contactsService.isLoading
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
               : ListView.builder(
                   padding: const EdgeInsets.all(10),
-                  itemCount: values['contacts'].length,
+                  itemCount: contactsService.contacts.length,
                   itemBuilder: (context, index) {
-                    final contact = values['contacts'][index];
+                    final contact = contactsService.contacts[index];
                     return Dismissible(
                       onDismissed: (direction) =>
                           contactsService.remove(contact),

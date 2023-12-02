@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       ),
       home: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             return const ContactsView();
           }

@@ -15,7 +15,7 @@ class AuthView extends StatelessWidget {
       body: Center(
         child: ValueListenableBuilder(
           valueListenable: authService,
-          builder: (context, value, child) {
+          builder: (BuildContext context, bool value, Widget? child) {
             return value
                 ? const CircularProgressIndicator()
                 : Column(

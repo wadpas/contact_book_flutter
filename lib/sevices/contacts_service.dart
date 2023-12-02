@@ -3,20 +3,19 @@ import 'package:flutter/material.dart';
 
 import '../models/contact_model.dart';
 
-class ContactsService extends ValueNotifier<Map<String, dynamic>> {
-  ContactsService()
-      : super({
-          'isLoading': false,
-          'contacts': [],
-        });
+class ContactsService extends ChangeNotifier {
+  bool _isLoading = false;
+  final List<Contact> _contacts = [];
+  bool get isLoading => _isLoading;
+  List<Contact> get contacts => _contacts;
 
   final db = FirebaseFirestore.instance;
 
   Future getContacts() async {
-    value['isLoading'] = true;
+    _isLoading = true;
     notifyListeners();
 
-    if (value['contacts'].isEmpty) {
+    if (_contacts.isEmpty) {
       await db.collection("contacts").get().then(
         (snapshot) {
           for (var contact in snapshot.docs) {
@@ -25,17 +24,17 @@ class ContactsService extends ValueNotifier<Map<String, dynamic>> {
               email: contact['email'],
               id: contact.id,
             );
-            value['contacts'].add(newContact);
+            _contacts.add(newContact);
           }
         },
       );
     }
-    value['isLoading'] = false;
+    _isLoading = false;
     notifyListeners();
   }
 
   Future addContact(String name, String email) async {
-    value['isLoading'] = true;
+    _isLoading = true;
     notifyListeners();
 
     final payload = {
@@ -52,13 +51,13 @@ class ContactsService extends ValueNotifier<Map<String, dynamic>> {
       id: fireDocumentId,
     );
 
-    value['contacts'].add(newContact);
-    value['isLoading'] = false;
+    _contacts.add(newContact);
+    _isLoading = false;
     notifyListeners();
   }
 
   void remove(Contact contact) async {
-    value['contacts'].remove(contact);
+    _contacts.remove(contact);
     notifyListeners();
   }
 }
