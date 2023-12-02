@@ -1,3 +1,4 @@
+import 'package:contact_book_flutter/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
 
 import 'package:contact_book_flutter/sevices/contacts_service.dart';
@@ -91,6 +92,9 @@ class _NewContactViewState extends State<NewContactView> {
                                       .addContact(
                                         _nameController.text,
                                         _emailController.text,
+                                      )
+                                      .catchError(
+                                        (error) => errorDialog(context, error),
                                       )
                                       .then(
                                         (_) => Navigator.of(context).pop(),

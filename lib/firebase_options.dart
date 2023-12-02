@@ -57,7 +57,8 @@ class DefaultFirebaseOptions {
     appId: '1:708060883662:android:a22700f9bc367aeaf6be9f',
     messagingSenderId: '708060883662',
     projectId: 'comon-database-8a85d',
-    databaseURL: 'https://comon-database-8a85d-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://comon-database-8a85d-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'comon-database-8a85d.appspot.com',
   );
 }

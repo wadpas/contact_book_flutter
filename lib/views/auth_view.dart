@@ -1,3 +1,4 @@
+import 'package:contact_book_flutter/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
 
 import 'package:contact_book_flutter/sevices/auth_service.dart';
@@ -28,31 +29,17 @@ class AuthView extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          authService.signInWithGoogle().catchError((e) {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  content: Text(e.message.toString()),
-                                );
-                              },
-                            );
-                          });
+                          authService.signInWithGoogle().catchError(
+                                (error) => errorDialog(context, error),
+                              );
                         },
                         child: const Text('Google'),
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          authService.signInAnonymous().catchError((e) {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  content: Text(e.message.toString()),
-                                );
-                              },
-                            );
-                          });
+                          authService.signInAnonymous().catchError(
+                                (error) => errorDialog(context, error),
+                              );
                         },
                         child: const Text('Anonymous'),
                       )

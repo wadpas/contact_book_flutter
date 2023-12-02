@@ -15,18 +15,25 @@ class ContactsService extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    await db.collection("contacts").get().then(
-      (snapshot) {
-        for (var contact in snapshot.docs) {
-          Contact newContact = Contact(
-            name: contact['name'],
-            email: contact['email'],
-            id: contact.id,
-          );
-          _contacts.add(newContact);
-        }
-      },
-    );
+    try {
+      await db.collection("contacts").get().then(
+        (snapshot) {
+          for (var contact in snapshot.docs) {
+            Contact newContact = Contact(
+              name: contact['name'],
+              email: contact['email'],
+              id: contact.id,
+            );
+            _contacts.add(newContact);
+          }
+        },
+      );
+    } on FirebaseException catch (e) {
+      print(e);
+      _isLoading = false;
+      notifyListeners();
+    }
+
     _isLoading = false;
     notifyListeners();
   }
@@ -35,21 +42,31 @@ class ContactsService extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    final payload = {
-      'name': name,
-      'email': email,
-    };
+    try {
+      final payload = {
+        'name': name,
+        'email': email,
+      };
 
-    final fireDocumentId =
-        await db.collection('contacts').add(payload).then((value) => value.id);
+      final fireDocumentId = await db
+          .collection('contacts')
+          .add(payload)
+          .then((value) => value.id);
 
-    final newContact = Contact(
-      name: name,
-      email: email,
-      id: fireDocumentId,
-    );
+      final newContact = Contact(
+        name: name,
+        email: email,
+        id: fireDocumentId,
+      );
 
-    _contacts.add(newContact);
+      _contacts.add(newContact);
+      notifyListeners();
+    } on FirebaseException catch (_) {
+      _isLoading = false;
+      notifyListeners();
+      rethrow;
+    }
+
     _isLoading = false;
     notifyListeners();
   }
@@ -58,9 +75,17 @@ class ContactsService extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    await db.collection('contacts').doc(contact.id).delete();
+    try {
+      await db.collection('contacts').doc(contact.id).delete();
 
-    _contacts.remove(contact);
+      _contacts.remove(contact);
+      notifyListeners();
+    } on FirebaseException catch (_) {
+      _isLoading = false;
+      notifyListeners();
+      rethrow;
+    }
+
     _isLoading = false;
     notifyListeners();
   }

@@ -4,10 +4,12 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService extends ValueNotifier<bool> {
   AuthService() : super(false);
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
   Future signInWithGoogle() async {
+    value = true;
+
     try {
-      value = true;
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
       final GoogleSignInAuthentication? googleAuth =
@@ -17,37 +19,30 @@ class AuthService extends ValueNotifier<bool> {
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
-      await FirebaseAuth.instance.signInWithCredential(credential).timeout(
-            const Duration(seconds: 3),
-          );
-      value = false;
+      await auth.signInWithCredential(credential);
     } on FirebaseAuthException catch (_) {
       value = false;
       rethrow;
-    } catch (e) {
-      value = false;
-      rethrow;
     }
+
+    value = false;
   }
 
   Future signInAnonymous() async {
+    value = true;
+
     try {
-      value = true;
-      await FirebaseAuth.instance.signInAnonymously().timeout(
-            const Duration(seconds: 3),
-          );
-      value = false;
+      await auth.signInAnonymously();
     } on FirebaseAuthException catch (_) {
       value = false;
       rethrow;
-    } catch (e) {
-      value = false;
-      rethrow;
     }
+
+    value = false;
   }
 
   Future signOut() async {
-    await FirebaseAuth.instance.signOut();
+    await auth.signOut();
     await GoogleSignIn().signOut();
   }
 }

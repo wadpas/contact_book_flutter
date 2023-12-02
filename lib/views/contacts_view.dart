@@ -1,3 +1,4 @@
+import 'package:contact_book_flutter/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
 
 import 'package:contact_book_flutter/sevices/auth_service.dart';
@@ -54,7 +55,7 @@ class _ContactsViewState extends State<ContactsView> {
               : ListView.builder(
                   padding: const EdgeInsets.all(10),
                   itemCount: widget.contactsService.contacts.length,
-                  itemBuilder: (context, index) {
+                  itemBuilder: (_, index) {
                     final contact = widget.contactsService.contacts[index];
                     return Dismissible(
                       onDismissed: (direction) =>
@@ -70,8 +71,11 @@ class _ContactsViewState extends State<ContactsView> {
                           title: Text(contact.name),
                           subtitle: Text(contact.email),
                           trailing: IconButton(
-                            onPressed: () =>
-                                widget.contactsService.removeContact(contact),
+                            onPressed: () => widget.contactsService
+                                .removeContact(contact)
+                                .catchError(
+                                  (error) => errorDialog(context, error),
+                                ),
                             icon: const Icon(Icons.delete),
                           ),
                           iconColor: Colors.redAccent,
